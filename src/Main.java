@@ -3,22 +3,28 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         AddressBook a1 = new AddressBook();
-        int i = 1;
+        int choice;
         Scanner sc = new Scanner(System.in);
-        System.out.println("Welcome to Address book");
+
+        System.out.println("Welcome to Address Book System!");
         do {
-            System.out.println("Enter 1 to create contact \n Enter 2 to display al contacts");
-            int input = sc.nextInt();
-            switch (input) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Create Contact");
+            System.out.println("2. Display All Contacts");
+            System.out.println("3. Edit Contact");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+
+            switch (choice) {
                 case 1 : a1.createContact();
                 case 2 : a1.display();
-                default : System.out.println("Wrong input");
+                case 3 : a1.editContact();
+                case 0 : System.out.println("Thank you for using Address Book System!");
+                default : System.out.println("Invalid choice, please try again.");
             }
-            System.out.println("Enter 0 to exit");
-            i = sc.nextInt();
+        } while (choice != 0);
 
-        } while (i != 0);
-        System.out.println("Thank you for using address book");
         sc.close();
     }
 }
