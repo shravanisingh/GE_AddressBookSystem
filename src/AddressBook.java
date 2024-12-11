@@ -14,7 +14,6 @@ public class AddressBook {
             }
         }
     }
-
     public void createContact() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter First Name:");
@@ -36,7 +35,6 @@ public class AddressBook {
         adBook.add(c1);
         System.out.println("Contact added successfully!");
     }
-
     public void editContact() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the First Name of the contact to edit:");
@@ -65,7 +63,6 @@ public class AddressBook {
         }
         System.out.println("Contact with the given name not found.");
     }
-
     public void deleteContact() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the First Name of the contact to delete:");
