@@ -12,6 +12,7 @@ public class Main {
             System.out.println("1. Create Contact");
             System.out.println("2. Display All Contacts");
             System.out.println("3. Edit Contact");
+            System.out.println("4. Delete Contact");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -19,9 +20,10 @@ public class Main {
             switch (choice) {
                 case 1 : a1.createContact();
                 case 2 : a1.display();
-                case 3 : a1.editContact();
-                case 0 : System.out.println("Thank you for using Address Book System!");
-                default : System.out.println("Invalid choice, please try again.");
+                case 3 :a1.editContact();
+                case 4 : a1.deleteContact();
+                case 0 :System.out.println("Thank you for using Address Book System!");
+                default :System.out.println("Invalid choice, please try again.");
             }
         } while (choice != 0);
 
