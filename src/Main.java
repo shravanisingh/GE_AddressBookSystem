@@ -18,12 +18,23 @@ public class Main {
             choice = sc.nextInt();
 
             switch (choice) {
-                case 1 : a1.createContact();
-                case 2 : a1.display();
-                case 3 :a1.editContact();
-                case 4 : a1.deleteContact();
-                case 0 :System.out.println("Thank you for using Address Book System!");
-                default :System.out.println("Invalid choice, please try again.");
+                case 1:
+                    a1.createContact();
+                    break;
+                case 2:
+                    a1.display();
+                    break;
+                case 3:
+                    a1.editContact();
+                    break;
+                case 4:
+                    a1.deleteContact();
+                    break;
+                case 0:
+                    System.out.println("Thank you for using Address Book System!");
+                    break;
+                default:
+                    System.out.println("Invalid choice, please try again.");
             }
         } while (choice != 0);
 
