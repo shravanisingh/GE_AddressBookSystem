@@ -1,17 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 public class AddressBook {
     List<Contact> adBook = new ArrayList<>();
-
     public void display() {
         if (adBook.isEmpty()) {
             System.out.println("Address book is empty.");
         } else {
-            for (Contact contact : adBook) {
-                System.out.println(contact);
-            }
+            adBook.forEach(System.out::println);
         }
     }
     public void createContact() {
@@ -30,10 +26,14 @@ public class AddressBook {
         int phone = sc.nextInt();
         System.out.println("Enter ZIP:");
         int zip = sc.nextInt();
-
-        Contact c1 = new Contact(name, lname, city, state, email, phone, zip);
-        adBook.add(c1);
-        System.out.println("Contact added successfully!");
+        Contact newContact = new Contact(name, lname, city, state, email, phone, zip);
+        boolean isDuplicate = adBook.stream().anyMatch(contact -> contact.equals(newContact));
+        if (isDuplicate) {
+            System.out.println("Duplicate contact found. Contact not added.");
+        } else {
+            adBook.add(newContact);
+            System.out.println("Contact added successfully!");
+        }
     }
     public void editContact() {
         Scanner sc = new Scanner(System.in);
@@ -67,14 +67,15 @@ public class AddressBook {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the First Name of the contact to delete:");
         String name = sc.next();
-
-        for (Contact contact : adBook) {
-            if (contact.firstName.equalsIgnoreCase(name)) {
-                adBook.remove(contact);
-                System.out.println("Contact deleted successfully!");
-                return;
-            }
+        Contact toRemove = adBook.stream()
+                .filter(contact -> contact.firstName.equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+        if (toRemove != null) {
+            adBook.remove(toRemove);
+            System.out.println("Contact deleted successfully!");
+        } else {
+            System.out.println("Contact with the given name not found.");
         }
-        System.out.println("Contact with the given name not found.");
     }
 }
