@@ -1,6 +1,5 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,6 +13,7 @@ public class Main {
             System.out.println("1. Add New Address Book");
             System.out.println("2. Select Address Book");
             System.out.println("3. Display All Address Books");
+            System.out.println("4. Search Person by City or State");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -45,10 +45,11 @@ public class Main {
                         System.out.println("No Address Books available.");
                     } else {
                         System.out.println("Available Address Books:");
-                        for (String bookName : addressBookMap.keySet()) {
-                            System.out.println("- " + bookName);
-                        }
+                        addressBookMap.keySet().forEach(System.out::println);
                     }
+                    break;
+                case 4:
+                    searchPersonByCityOrState(addressBookMap);
                     break;
                 case 0:
                     System.out.println("Thank you for using the Multi-Address Book System!");
@@ -96,5 +97,49 @@ public class Main {
                     System.out.println("Invalid choice, please try again.");
             }
         } while (choice != 0);
+    }
+
+    private static void searchPersonByCityOrState(Map<String, AddressBook> addressBookMap) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("\nSearch Menu:");
+        System.out.println("1. Search by City");
+        System.out.println("2. Search by State");
+        System.out.print("Enter your choice: ");
+        int searchChoice = sc.nextInt();
+        sc.nextLine(); // Consume newline
+
+        System.out.print("Enter the name of the City/State to search: ");
+        String query = sc.nextLine();
+
+        List<Contact> result = new ArrayList<>();
+
+        switch (searchChoice) {
+            case 1: // Search by City
+                addressBookMap.values().forEach(addressBook -> {
+                    List<Contact> cityContacts = addressBook.adBook.stream()
+                            .filter(contact -> contact.city.equalsIgnoreCase(query))
+                            .collect(Collectors.toList());
+                    result.addAll(cityContacts);
+                });
+                break;
+            case 2: // Search by State
+                addressBookMap.values().forEach(addressBook -> {
+                    List<Contact> stateContacts = addressBook.adBook.stream()
+                            .filter(contact -> contact.state.equalsIgnoreCase(query))
+                            .collect(Collectors.toList());
+                    result.addAll(stateContacts);
+                });
+                break;
+            default:
+                System.out.println("Invalid choice.");
+                return;
+        }
+
+        if (result.isEmpty()) {
+            System.out.println("No contacts found.");
+        } else {
+            System.out.println("Search Results:");
+            result.forEach(System.out::println);
+        }
     }
 }
