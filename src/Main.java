@@ -1,12 +1,10 @@
 import java.util.*;
+import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
         Map<String, AddressBook> addressBookMap = new HashMap<>();
-        Map<String, List<Contact>> cityPersonMap = new HashMap<>();
-        Map<String, List<Contact>> statePersonMap = new HashMap<>();
         Scanner sc = new Scanner(System.in);
         int choice;
-
         System.out.println("Welcome to Multi-Address Book System!");
         do {
             System.out.println("\nMenu:");
@@ -15,12 +13,12 @@ public class Main {
             System.out.println("3. Display All Address Books");
             System.out.println("4. View Persons by City");
             System.out.println("5. View Persons by State");
-            System.out.println("6. Update City/State Dictionaries");
+            System.out.println("6. Count Contacts by City");
+            System.out.println("7. Count Contacts by State");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
             sc.nextLine(); // Consume newline
-
             switch (choice) {
                 case 1:
                     System.out.print("Enter the name of the new Address Book: ");
@@ -51,14 +49,16 @@ public class Main {
                     }
                     break;
                 case 4:
-                    viewPersonsByCity(cityPersonMap);
+                    viewPersonsByCity(addressBookMap);
                     break;
                 case 5:
-                    viewPersonsByState(statePersonMap);
+                    viewPersonsByState(addressBookMap);
                     break;
                 case 6:
-                    updateCityAndStateDictionaries(addressBookMap, cityPersonMap, statePersonMap);
-                    System.out.println("Dictionaries updated successfully!");
+                    countContactsByCity(addressBookMap);
+                    break;
+                case 7:
+                    countContactsByState(addressBookMap);
                     break;
                 case 0:
                     System.out.println("Thank you for using the Multi-Address Book System!");
@@ -70,11 +70,9 @@ public class Main {
 
         sc.close();
     }
-
     private static void manageAddressBook(AddressBook addressBook) {
         Scanner sc = new Scanner(System.in);
         int choice;
-
         do {
             System.out.println("\nAddress Book Menu:");
             System.out.println("1. Create Contact");
@@ -107,29 +105,10 @@ public class Main {
             }
         } while (choice != 0);
     }
-
-    private static void updateCityAndStateDictionaries(
-            Map<String, AddressBook> addressBookMap,
-            Map<String, List<Contact>> cityPersonMap,
-            Map<String, List<Contact>> statePersonMap) {
-        cityPersonMap.clear();
-        statePersonMap.clear();
-
-        addressBookMap.values().forEach(addressBook -> {
-            addressBook.adBook.forEach(contact -> {
-                // Update city map
-                cityPersonMap.computeIfAbsent(contact.city, k -> new ArrayList<>()).add(contact);
-                // Update state map
-                statePersonMap.computeIfAbsent(contact.state, k -> new ArrayList<>()).add(contact);
-            });
-        });
-    }
-
-    private static void viewPersonsByCity(Map<String, List<Contact>> cityPersonMap) {
-        if (cityPersonMap.isEmpty()) {
-            System.out.println("No data available. Please update the dictionaries first.");
-            return;
-        }
+    private static void viewPersonsByCity(Map<String, AddressBook> addressBookMap) {
+        Map<String, List<Contact>> cityPersonMap = addressBookMap.values().stream()
+                .flatMap(addressBook -> addressBook.adBook.stream())
+                .collect(Collectors.groupingBy(contact -> contact.city));
 
         System.out.println("Persons by City:");
         cityPersonMap.forEach((city, contacts) -> {
@@ -138,16 +117,33 @@ public class Main {
         });
     }
 
-    private static void viewPersonsByState(Map<String, List<Contact>> statePersonMap) {
-        if (statePersonMap.isEmpty()) {
-            System.out.println("No data available. Please update the dictionaries first.");
-            return;
-        }
+    private static void viewPersonsByState(Map<String, AddressBook> addressBookMap) {
+        Map<String, List<Contact>> statePersonMap = addressBookMap.values().stream()
+                .flatMap(addressBook -> addressBook.adBook.stream())
+                .collect(Collectors.groupingBy(contact -> contact.state));
 
         System.out.println("Persons by State:");
         statePersonMap.forEach((state, contacts) -> {
             System.out.println("\nState: " + state);
             contacts.forEach(System.out::println);
         });
+    }
+
+    private static void countContactsByCity(Map<String, AddressBook> addressBookMap) {
+        Map<String, Long> cityCountMap = addressBookMap.values().stream()
+                .flatMap(addressBook -> addressBook.adBook.stream())
+                .collect(Collectors.groupingBy(contact -> contact.city, Collectors.counting()));
+
+        System.out.println("Contact Count by City:");
+        cityCountMap.forEach((city, count) -> System.out.println("City: " + city + ", Count: " + count));
+    }
+
+    private static void countContactsByState(Map<String, AddressBook> addressBookMap) {
+        Map<String, Long> stateCountMap = addressBookMap.values().stream()
+                .flatMap(addressBook -> addressBook.adBook.stream())
+                .collect(Collectors.groupingBy(contact -> contact.state, Collectors.counting()));
+
+        System.out.println("Contact Count by State:");
+        stateCountMap.forEach((state, count) -> System.out.println("State: " + state + ", Count: " + count));
     }
 }
