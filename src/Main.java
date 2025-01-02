@@ -73,12 +73,14 @@ public class Main {
     private static void manageAddressBook(AddressBook addressBook) {
         Scanner sc = new Scanner(System.in);
         int choice;
+
         do {
             System.out.println("\nAddress Book Menu:");
             System.out.println("1. Create Contact");
             System.out.println("2. Display All Contacts");
             System.out.println("3. Edit Contact");
             System.out.println("4. Delete Contact");
+            System.out.println("5. Sort Contacts by Name");
             System.out.println("0. Return to Main Menu");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -96,6 +98,9 @@ public class Main {
                     break;
                 case 4:
                     addressBook.deleteContact();
+                    break;
+                case 5:
+                    addressBook.sortContactsByName();
                     break;
                 case 0:
                     System.out.println("Returning to Main Menu...");
