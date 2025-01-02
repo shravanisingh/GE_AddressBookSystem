@@ -1,8 +1,7 @@
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class AddressBook {
     List<Contact> adBook = new ArrayList<>();
@@ -15,33 +14,6 @@ public class AddressBook {
                 System.out.println(contact);
             }
         }
-    }
-
-    public void sortByCity() {
-        List<Contact> sortedByCity = adBook.stream()
-                .sorted(Comparator.comparing(contact -> contact.city))
-                .collect(Collectors.toList());
-
-        System.out.println("Contacts sorted by City:");
-        sortedByCity.forEach(System.out::println);
-    }
-
-    public void sortByState() {
-        List<Contact> sortedByState = adBook.stream()
-                .sorted(Comparator.comparing(contact -> contact.state))
-                .collect(Collectors.toList());
-
-        System.out.println("Contacts sorted by State:");
-        sortedByState.forEach(System.out::println);
-    }
-
-    public void sortByZip() {
-        List<Contact> sortedByZip = adBook.stream()
-                .sorted(Comparator.comparingInt(contact -> contact.zip))
-                .collect(Collectors.toList());
-
-        System.out.println("Contacts sorted by ZIP Code:");
-        sortedByZip.forEach(System.out::println);
     }
 
     public void createContact() {
@@ -66,47 +38,38 @@ public class AddressBook {
         System.out.println("Contact added successfully!");
     }
 
-    public void editContact() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the First Name of the contact to edit:");
-        String name = sc.next();
-
-        for (Contact contact : adBook) {
-            if (contact.firstName.equalsIgnoreCase(name)) {
-                System.out.println("Contact found: " + contact);
-                System.out.println("Enter new details:");
-                System.out.print("Enter Last Name: ");
-                contact.lastName = sc.next();
-                System.out.print("Enter City: ");
-                contact.city = sc.next();
-                System.out.print("Enter State: ");
-                contact.state = sc.next();
-                System.out.print("Enter Email: ");
-                contact.email = sc.next();
-                System.out.print("Enter Phone: ");
-                contact.phone = sc.nextInt();
-                System.out.print("Enter ZIP: ");
-                contact.zip = sc.nextInt();
-
-                System.out.println("Contact updated successfully!");
-                return;
+    public void saveToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (Contact contact : adBook) {
+                writer.write(contact.toFileString());
+                writer.newLine();
             }
+            System.out.println("Address book saved to file: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Error while saving address book: " + e.getMessage());
         }
-        System.out.println("Contact with the given name not found.");
     }
 
-    public void deleteContact() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the First Name of the contact to delete:");
-        String name = sc.next();
-
-        for (Contact contact : adBook) {
-            if (contact.firstName.equalsIgnoreCase(name)) {
-                adBook.remove(contact);
-                System.out.println("Contact deleted successfully!");
-                return;
+    public void loadFromFile(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            adBook.clear(); // Clear current address book
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                Contact contact = new Contact(
+                        data[0],
+                        data[1],
+                        data[2],
+                        data[3],
+                        data[4],
+                        Integer.parseInt(data[5]),
+                        Integer.parseInt(data[6])
+                );
+                adBook.add(contact);
             }
+            System.out.println("Address book loaded from file: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Error while loading address book: " + e.getMessage());
         }
-        System.out.println("Contact with the given name not found.");
     }
 }

@@ -19,7 +19,19 @@ public class Contact {
 
     @Override
     public String toString() {
-        return String.format("Name: %s %s, City: %s, State: %s, Email: %s, Phone: %d, ZIP: %d",
-                firstName, lastName, city, state, email, phone, zip);
+        return "Contact{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", email='" + email + '\'' +
+                ", phone=" + phone +
+                ", zip=" + zip +
+                '}';
+    }
+
+    // Convert Contact to a file-friendly string
+    public String toFileString() {
+        return firstName + "," + lastName + "," + city + "," + state + "," + email + "," + phone + "," + zip;
     }
 }

@@ -78,12 +78,8 @@ public class Main {
             System.out.println("\nAddress Book Menu:");
             System.out.println("1. Create Contact");
             System.out.println("2. Display All Contacts");
-            System.out.println("3. Edit Contact");
-            System.out.println("4. Delete Contact");
-            System.out.println("5. Sort Contacts by Name");
-            System.out.println("6. Sort Contacts by City");
-            System.out.println("7. Sort Contacts by State");
-            System.out.println("8. Sort Contacts by ZIP Code");
+            System.out.println("3. Save Address Book to File");
+            System.out.println("4. Load Address Book from File");
             System.out.println("0. Return to Main Menu");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -97,22 +93,14 @@ public class Main {
                     addressBook.display();
                     break;
                 case 3:
-                    addressBook.editContact();
+                    System.out.print("Enter file name to save: ");
+                    String saveFileName = sc.nextLine();
+                    addressBook.saveToFile(saveFileName);
                     break;
                 case 4:
-                    addressBook.deleteContact();
-                    break;
-                case 5:
-                    addressBook.sortByCity();
-                    break;
-                case 6:
-                    addressBook.sortByCity();
-                    break;
-                case 7:
-                    addressBook.sortByState();
-                    break;
-                case 8:
-                    addressBook.sortByZip();
+                    System.out.print("Enter file name to load: ");
+                    String loadFileName = sc.nextLine();
+                    addressBook.loadFromFile(loadFileName);
                     break;
                 case 0:
                     System.out.println("Returning to Main Menu...");
