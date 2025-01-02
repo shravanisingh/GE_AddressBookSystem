@@ -1,9 +1,9 @@
 import java.util.*;
-import java.util.stream.Collectors;
-
 public class Main {
     public static void main(String[] args) {
         Map<String, AddressBook> addressBookMap = new HashMap<>();
+        Map<String, List<Contact>> cityPersonMap = new HashMap<>();
+        Map<String, List<Contact>> statePersonMap = new HashMap<>();
         Scanner sc = new Scanner(System.in);
         int choice;
 
@@ -13,7 +13,9 @@ public class Main {
             System.out.println("1. Add New Address Book");
             System.out.println("2. Select Address Book");
             System.out.println("3. Display All Address Books");
-            System.out.println("4. Search Person by City or State");
+            System.out.println("4. View Persons by City");
+            System.out.println("5. View Persons by State");
+            System.out.println("6. Update City/State Dictionaries");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -49,7 +51,14 @@ public class Main {
                     }
                     break;
                 case 4:
-                    searchPersonByCityOrState(addressBookMap);
+                    viewPersonsByCity(cityPersonMap);
+                    break;
+                case 5:
+                    viewPersonsByState(statePersonMap);
+                    break;
+                case 6:
+                    updateCityAndStateDictionaries(addressBookMap, cityPersonMap, statePersonMap);
+                    System.out.println("Dictionaries updated successfully!");
                     break;
                 case 0:
                     System.out.println("Thank you for using the Multi-Address Book System!");
@@ -99,47 +108,46 @@ public class Main {
         } while (choice != 0);
     }
 
-    private static void searchPersonByCityOrState(Map<String, AddressBook> addressBookMap) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\nSearch Menu:");
-        System.out.println("1. Search by City");
-        System.out.println("2. Search by State");
-        System.out.print("Enter your choice: ");
-        int searchChoice = sc.nextInt();
-        sc.nextLine(); // Consume newline
+    private static void updateCityAndStateDictionaries(
+            Map<String, AddressBook> addressBookMap,
+            Map<String, List<Contact>> cityPersonMap,
+            Map<String, List<Contact>> statePersonMap) {
+        cityPersonMap.clear();
+        statePersonMap.clear();
 
-        System.out.print("Enter the name of the City/State to search: ");
-        String query = sc.nextLine();
+        addressBookMap.values().forEach(addressBook -> {
+            addressBook.adBook.forEach(contact -> {
+                // Update city map
+                cityPersonMap.computeIfAbsent(contact.city, k -> new ArrayList<>()).add(contact);
+                // Update state map
+                statePersonMap.computeIfAbsent(contact.state, k -> new ArrayList<>()).add(contact);
+            });
+        });
+    }
 
-        List<Contact> result = new ArrayList<>();
-
-        switch (searchChoice) {
-            case 1: // Search by City
-                addressBookMap.values().forEach(addressBook -> {
-                    List<Contact> cityContacts = addressBook.adBook.stream()
-                            .filter(contact -> contact.city.equalsIgnoreCase(query))
-                            .collect(Collectors.toList());
-                    result.addAll(cityContacts);
-                });
-                break;
-            case 2: // Search by State
-                addressBookMap.values().forEach(addressBook -> {
-                    List<Contact> stateContacts = addressBook.adBook.stream()
-                            .filter(contact -> contact.state.equalsIgnoreCase(query))
-                            .collect(Collectors.toList());
-                    result.addAll(stateContacts);
-                });
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                return;
+    private static void viewPersonsByCity(Map<String, List<Contact>> cityPersonMap) {
+        if (cityPersonMap.isEmpty()) {
+            System.out.println("No data available. Please update the dictionaries first.");
+            return;
         }
 
-        if (result.isEmpty()) {
-            System.out.println("No contacts found.");
-        } else {
-            System.out.println("Search Results:");
-            result.forEach(System.out::println);
+        System.out.println("Persons by City:");
+        cityPersonMap.forEach((city, contacts) -> {
+            System.out.println("\nCity: " + city);
+            contacts.forEach(System.out::println);
+        });
+    }
+
+    private static void viewPersonsByState(Map<String, List<Contact>> statePersonMap) {
+        if (statePersonMap.isEmpty()) {
+            System.out.println("No data available. Please update the dictionaries first.");
+            return;
         }
+
+        System.out.println("Persons by State:");
+        statePersonMap.forEach((state, contacts) -> {
+            System.out.println("\nState: " + state);
+            contacts.forEach(System.out::println);
+        });
     }
 }
