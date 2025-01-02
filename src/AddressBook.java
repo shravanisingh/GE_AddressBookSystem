@@ -17,13 +17,31 @@ public class AddressBook {
         }
     }
 
-    public void sortContactsByName() {
-        List<Contact> sortedContacts = adBook.stream()
-                .sorted(Comparator.comparing(contact -> contact.firstName))
+    public void sortByCity() {
+        List<Contact> sortedByCity = adBook.stream()
+                .sorted(Comparator.comparing(contact -> contact.city))
                 .collect(Collectors.toList());
 
-        System.out.println("Contacts sorted alphabetically by name:");
-        sortedContacts.forEach(System.out::println);
+        System.out.println("Contacts sorted by City:");
+        sortedByCity.forEach(System.out::println);
+    }
+
+    public void sortByState() {
+        List<Contact> sortedByState = adBook.stream()
+                .sorted(Comparator.comparing(contact -> contact.state))
+                .collect(Collectors.toList());
+
+        System.out.println("Contacts sorted by State:");
+        sortedByState.forEach(System.out::println);
+    }
+
+    public void sortByZip() {
+        List<Contact> sortedByZip = adBook.stream()
+                .sorted(Comparator.comparingInt(contact -> contact.zip))
+                .collect(Collectors.toList());
+
+        System.out.println("Contacts sorted by ZIP Code:");
+        sortedByZip.forEach(System.out::println);
     }
 
     public void createContact() {
